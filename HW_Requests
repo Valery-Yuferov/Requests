@@ -1,0 +1,54 @@
+from pprint import pprint
+import requests
+
+# Задача №1
+superheroes_list = ['Hulk', 'Captain America', 'Thanos']
+
+url = 'https://www.superheroapi.com/api.php/2619421814940190/search/'
+
+def get_intelligence():
+    intelligence_dict = {}
+    for superhero in superheroes_list:
+        superheros_dict = requests.get(url + superhero).json()['results']
+        intelligence_dict.setdefault(superhero, superheros_dict[0]['powerstats']['intelligence'])
+
+    return f"Самый умный супергерой: {max(intelligence_dict)}"
+
+
+# Задача №2
+class YaUploader:
+
+    def __init__(self, token: str):
+        self.token = token
+
+
+    def get_headers(self):
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': 'OAuth {}'.format(self.token)
+        }
+          
+          
+    def _get_upload_link(self, disk_file_path):
+        upload_url = "https://cloud-api.yandex.net/v1/disk/resources/upload"
+        headers = self.get_headers()
+        params = {"path": disk_file_path, "overwrite": "true"}
+        response = requests.get(upload_url, headers=headers, params=params)
+        return response.json()
+
+  
+    def upload(self, disk_file_path, filename):
+        href = self._get_upload_link(disk_file_path=disk_file_path).get("href", "")
+        response = requests.put(href, data=open(filename, 'rb'))
+        response.raise_for_status()
+        if response.status_code == 201:
+            print("Success")
+
+
+if __name__ == '__main__':
+  print(get_intelligence())
+  
+  disk_file_path="netology_request/Test_Request.txt"
+  token="AQAAAAATDfvLAADLW0JSjMnBuUf0tuhl2kdc8hs"  
+  uploader = YaUploader(token)
+  result = uploader.upload(disk_file_path, filename="Test_Request.txt")
