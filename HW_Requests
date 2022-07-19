@@ -49,6 +49,6 @@ if __name__ == '__main__':
   print(get_intelligence())
   
   disk_file_path="netology_request/Test_Request.txt"
-  token="AQAAAAATDfvLAADLW0JSjMnBuUf0tuhl2kdc8hs"  
+  token="........."  
   uploader = YaUploader(token)
   result = uploader.upload(disk_file_path, filename="Test_Request.txt")
